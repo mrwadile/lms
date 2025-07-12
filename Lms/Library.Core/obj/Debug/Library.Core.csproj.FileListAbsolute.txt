@@ -1,0 +1,9 @@
+C:\Users\wadil\Documents\Lms\lms\Lms\Library.Core\bin\Debug\Library.Core.dll
+C:\Users\wadil\Documents\Lms\lms\Lms\Library.Core\bin\Debug\Library.Core.pdb
+C:\Users\wadil\Documents\Lms\lms\Lms\Library.Core\bin\Debug\System.Configuration.ConfigurationManager.dll
+C:\Users\wadil\Documents\Lms\lms\Lms\Library.Core\bin\Debug\System.Configuration.ConfigurationManager.xml
+C:\Users\wadil\Documents\Lms\lms\Lms\Library.Core\obj\Debug\Library.Core.csproj.AssemblyReference.cache
+C:\Users\wadil\Documents\Lms\lms\Lms\Library.Core\obj\Debug\Library.Core.csproj.CoreCompileInputs.cache
+C:\Users\wadil\Documents\Lms\lms\Lms\Library.Core\obj\Debug\Library..26B1B06C.Up2Date
+C:\Users\wadil\Documents\Lms\lms\Lms\Library.Core\obj\Debug\Library.Core.dll
+C:\Users\wadil\Documents\Lms\lms\Lms\Library.Core\obj\Debug\Library.Core.pdb

@@ -70,3 +70,13 @@ INSERT INTO Users (Username, Password, Role, IsActive)
 VALUES 
 ('RavindraWadile', '@RavindraWadile', 'Admin', 1),
 ('PramodAdmin',     '@PramodAdmin', 'Admin', 1);
+
+GO
+CREATE PROCEDURE sp_GetDashboardData
+AS
+BEGIN
+    SELECT 
+        (SELECT COUNT(*) FROM MemberMaster) AS TotalMembers,
+        (SELECT COUNT(*) FROM BookMaster) AS TotalBooks,
+        (SELECT COUNT(*) FROM BookIssue) AS IssuedBooks
+END

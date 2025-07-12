@@ -32,6 +32,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.ConfigurationManager, Version=9.0.0.7, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Configuration.ConfigurationManager.9.0.7\lib\net462\System.Configuration.ConfigurationManager.dll</HintPath>
+    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -42,16 +47,37 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class1.cs" />
+    <Compile Include="Data\DbConnectionFactory.cs" />
+    <Compile Include="Models\Book.cs" />
+    <Compile Include="Models\BookCategoryStats.cs" />
+    <Compile Include="Models\BookIssue.cs" />
+    <Compile Include="Models\ChartData.cs" />
+    <Compile Include="Models\DashboardData.cs" />
+    <Compile Include="Models\DashboardStats.cs" />
+    <Compile Include="Models\Member.cs" />
+    <Compile Include="Models\RecentIssueStats.cs" />
+    <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\AuthRepository.cs" />
+    <Compile Include="Repositories\BookRepository.cs" />
+    <Compile Include="Repositories\Interfaces\IAuthRepository.cs" />
+    <Compile Include="Repositories\Interfaces\IBookRepository.cs" />
+    <Compile Include="Repositories\Interfaces\IMember.cs" />
+    <Compile Include="Repositories\MemberRepository.cs" />
+    <Compile Include="Services\Books\BookService.cs" />
+    <Compile Include="Services\Books\IBookService.cs" />
+    <Compile Include="Services\Report\IReportService.cs" />
+    <Compile Include="Services\Report\ReportService.cs" />
+    <Compile Include="Services\UserLogin\ILoginService.cs" />
+    <Compile Include="Services\UserLogin\LoginService.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Data\" />
-    <Folder Include="Models\" />
-    <Folder Include="Repositories\Interfaces\" />
-    <Folder Include="Services\Books\" />
+    <Folder Include="Services\Dashboaard\" />
     <Folder Include="Services\Members\" />
     <Folder Include="Services\Reports\" />
-    <Folder Include="Services\UserLogin\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
