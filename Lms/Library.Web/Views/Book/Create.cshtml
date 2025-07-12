@@ -1,0 +1,255 @@
+﻿@model Library.Core.Models.Book
+
+@{
+    ViewBag.Title = "Add New Book";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">📘 Add New Book</h4>
+                </div>
+
+                <div class="card-body">
+                    <form id="addBookForm" autocomplete="off" novalidate>
+                        @Html.AntiForgeryToken()
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                @Html.LabelFor(m => m.Title, new { @class = "form-label" })
+                                @Html.TextBoxFor(m => m.Title, new { @class = "form-control", placeholder = "Enter book title", required = "required" })
+                                @Html.ValidationMessageFor(m => m.Title, "", new { @class = "text-danger small" })
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                @Html.LabelFor(m => m.Author, new { @class = "form-label" })
+                                @Html.TextBoxFor(m => m.Author, new { @class = "form-control", placeholder = "Author name", required = "required" })
+                                @Html.ValidationMessageFor(m => m.Author, "", new { @class = "text-danger small" })
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                @Html.LabelFor(m => m.ISBN, new { @class = "form-label" })
+                                @Html.TextBoxFor(m => m.ISBN, new { @class = "form-control", placeholder = "ISBN number", required = "required" })
+                                @Html.ValidationMessageFor(m => m.ISBN, "", new { @class = "text-danger small" })
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                @Html.LabelFor(m => m.Category, new { @class = "form-label" })
+                                @Html.DropDownListFor(m => m.Category, new SelectList(new[] {
+                                    "Fiction","General", "Non-Fiction", "Science", "Technology", "History",
+                                    "Biography", "Mystery", "Romance", "Fantasy", "Educational"
+                                }), "Select Category", new { @class = "form-select", required = "required" })
+                                @Html.ValidationMessageFor(m => m.Category, "", new { @class = "text-danger small" })
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                @Html.LabelFor(m => m.TotalCopies, new { @class = "form-label" })
+                                @Html.TextBoxFor(m => m.TotalCopies, new { @class = "form-control", type = "number", min = "1", required = "required" })
+                                @Html.ValidationMessageFor(m => m.TotalCopies, "", new { @class = "text-danger small" })
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                @Html.LabelFor(m => m.AvailableCopies, new { @class = "form-label" })
+                                @Html.TextBoxFor(m => m.AvailableCopies, new { @class = "form-control", type = "number", min = "0", required = "required" })
+                                @Html.ValidationMessageFor(m => m.AvailableCopies, "", new { @class = "text-danger small" })
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 mt-4">
+                            @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-secondary" })
+                            <button type="button" class="btn btn-success" id="submitBtn">
+                                <span class="btn-text">Save Book</span>
+                                <span class="spinner-border spinner-border-sm ms-2 d-none" id="loadingSpinner"></span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        $(document).ready(function() {
+            // Auto-adjust available copies when total copies changes
+            $('#TotalCopies').on('input', function() {
+                const totalCopies = parseInt($(this).val()) || 0;
+                const availableCopies = parseInt($('#AvailableCopies').val()) || 0;
+
+                if (availableCopies > totalCopies) {
+                    $('#AvailableCopies').val(totalCopies);
+                }
+            });
+
+            // Handle form submission
+            $('#submitBtn').on('click', function(e) {
+                e.preventDefault();
+                performAjaxSubmit();
+            });
+
+            // Handle Enter key press in form inputs
+            $('#addBookForm input').keypress(function(e) {
+                if (e.which == 13) { // Enter key
+                    e.preventDefault();
+                    performAjaxSubmit();
+                }
+            });
+
+            function performAjaxSubmit() {
+                // Clear previous validation messages
+                $('.text-danger').text('');
+
+                // Validate form data
+                if (!validateForm()) {
+                    return;
+                }
+
+                const $submitBtn = $('#submitBtn');
+                const $spinner = $('#loadingSpinner');
+                const $btnText = $('.btn-text');
+
+                // Show loading state
+                $submitBtn.prop('disabled', true);
+                $spinner.removeClass('d-none');
+                $btnText.text('Saving...');
+
+                // Prepare form data
+                const formData = {
+                    Title: $('#Title').val().trim(),
+                    Author: $('#Author').val().trim(),
+                    ISBN: $('#ISBN').val().trim(),
+                    Category: $('#Category').val(),
+                    TotalCopies: parseInt($('#TotalCopies').val()) || 0,
+                    AvailableCopies: parseInt($('#AvailableCopies').val()) || 0,
+                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                };
+
+                // Debug: Log form data
+                console.log('Form Data:', formData);
+
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("Create", "Book")',
+                    data: formData,
+                    dataType: 'json',
+                    success: function(result) {
+                        console.log('Server Response:', result);
+
+                        if (result.success) {
+                            alert('✅ Book added successfully!');
+                            window.location.href = result.redirectUrl || '@Url.Action("Index", "Book")';
+                        } else {
+                            // Handle validation errors from server
+                            if (result.errors) {
+                                displayValidationErrors(result.errors);
+                            } else {
+                                alert(result.message || '❌ Failed to save book. Please try again.');
+                            }
+                            resetButton();
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('AJAX Error:', xhr.responseText);
+                        alert('🚨 Server error. Please try again.');
+                        resetButton();
+                    }
+                });
+            }
+
+            function validateForm() {
+                let isValid = true;
+
+                // Get form values
+                const title = $('#Title').val().trim();
+                const author = $('#Author').val().trim();
+                const isbn = $('#ISBN').val().trim();
+                const category = $('#Category').val();
+                const totalCopies = parseInt($('#TotalCopies').val()) || 0;
+                const availableCopies = parseInt($('#AvailableCopies').val()) || 0;
+
+                // Validate required fields
+                if (!title) {
+                    showValidationError('Title', 'Title is required.');
+                    isValid = false;
+                }
+
+                if (!author) {
+                    showValidationError('Author', 'Author is required.');
+                    isValid = false;
+                }
+
+                if (!isbn) {
+                    showValidationError('ISBN', 'ISBN is required.');
+                    isValid = false;
+                }
+
+                if (!category) {
+                    showValidationError('Category', 'Category is required.');
+                    isValid = false;
+                }
+
+                if (totalCopies <= 0) {
+                    showValidationError('TotalCopies', 'Total copies must be greater than 0.');
+                    isValid = false;
+                }
+
+                if (availableCopies < 0) {
+                    showValidationError('AvailableCopies', 'Available copies cannot be negative.');
+                    isValid = false;
+                }
+
+                if (availableCopies > totalCopies) {
+                    showValidationError('AvailableCopies', 'Available copies cannot exceed total copies.');
+                    isValid = false;
+                }
+
+                return isValid;
+            }
+
+            function showValidationError(fieldName, message) {
+                const $field = $('#' + fieldName);
+                const $validationSpan = $field.siblings('.text-danger');
+                if ($validationSpan.length > 0) {
+                    $validationSpan.text(message);
+                } else {
+                    $field.after('<span class="text-danger small">' + message + '</span>');
+                }
+            }
+
+            function displayValidationErrors(errors) {
+                // Clear existing validation messages
+                $('.text-danger').text('');
+
+                // Display server validation errors
+                for (const fieldName in errors) {
+                    if (errors.hasOwnProperty(fieldName)) {
+                        const errorMessages = errors[fieldName];
+                        if (Array.isArray(errorMessages) && errorMessages.length > 0) {
+                            showValidationError(fieldName, errorMessages[0]);
+                        }
+                    }
+                }
+            }
+
+            function resetButton() {
+                const $submitBtn = $('#submitBtn');
+                const $spinner = $('#loadingSpinner');
+                const $btnText = $('.btn-text');
+
+                $submitBtn.prop('disabled', false);
+                $spinner.addClass('d-none');
+                $btnText.text('Save Book');
+            }
+        });
+    </script>
+}

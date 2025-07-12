@@ -4,6 +4,7 @@ using Autofac.Integration.Mvc;
 using Library.Core.Data;
 using Library.Core.Repositories;
 using Library.Core.Repositories.Interfaces;
+using Library.Core.Services.Books;
 using Library.Core.Services.Report;
 using Library.Core.Services.UserLogin;
 using System;
@@ -26,7 +27,8 @@ namespace Library.Web.App_Start
             builder.RegisterControllers(Assembly.GetExecutingAssembly());
 
             // Register your repository and interface
-            //builder.RegisterType<BookRepository>().As<IBookRepository>().InstancePerRequest();
+            builder.RegisterType<BookRepository>().As<IBookRepository>().InstancePerRequest();
+            builder.RegisterType<BookService>().As<IBookService>().InstancePerRequest();
             //builder.RegisterType<MemberRepository>().As<IMember>().InstancePerRequest();
             builder.RegisterType<AuthRepository>().As<IAuthRepository>().InstancePerRequest();
             builder.RegisterType<LoginService>().As<ILoginService>().InstancePerRequest();

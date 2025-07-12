@@ -1,0 +1,261 @@
+﻿@model Library.Core.Models.Book
+
+@{
+    ViewBag.Title = "Edit Book";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <!-- Header Section -->
+            <div class="card border-0 shadow-lg mb-4">
+                <div class="card-header bg-primary text-white text-center py-4">
+                    <div class="d-flex align-items-center justify-content-center">
+                        <i class="fas fa-edit fa-2x me-3"></i>
+                        <div>
+                            <h2 class="mb-0 fw-bold">Edit Book</h2>
+                            <p class="mb-0 opacity-75">Update book information</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alert Messages -->
+            <div id="resultMsg" class="alert alert-dismissible fade" role="alert" style="display: none;">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <span id="alertMessage"></span>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <!-- Edit Form Card -->
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-light border-bottom">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-book text-primary me-2"></i>
+                        <h4 class="mb-0 text-dark">Book Information</h4>
+                    </div>
+                </div>
+                <div class="card-body p-4">
+                    <div id="editBookForm" autocomplete="off" novalidate>
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(m => m.BookId)
+
+                        <div class="row g-4">
+                            <!-- Left Column -->
+                            <div class="col-md-6">
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold text-dark">
+                                        <i class="fas fa-heading me-2 text-primary"></i>
+                                        @Html.DisplayNameFor(m => m.Title)
+                                    </label>
+                                    @Html.TextBoxFor(m => m.Title, new { @class = "form-control form-control-lg", placeholder = "Enter book title" })
+                                    @Html.ValidationMessageFor(m => m.Title, "", new { @class = "text-danger small mt-1" })
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold text-dark">
+                                        <i class="fas fa-user-edit me-2 text-primary"></i>
+                                        @Html.DisplayNameFor(m => m.Author)
+                                    </label>
+                                    @Html.TextBoxFor(m => m.Author, new { @class = "form-control form-control-lg", placeholder = "Enter author name" })
+                                    @Html.ValidationMessageFor(m => m.Author, "", new { @class = "text-danger small mt-1" })
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold text-dark">
+                                        <i class="fas fa-barcode me-2 text-primary"></i>
+                                        @Html.DisplayNameFor(m => m.ISBN)
+                                    </label>
+                                    @Html.TextBoxFor(m => m.ISBN, new { @class = "form-control form-control-lg font-monospace", placeholder = "Enter ISBN code" })
+                                    @Html.ValidationMessageFor(m => m.ISBN, "", new { @class = "text-danger small mt-1" })
+                                </div>
+                            </div>
+
+                            <!-- Right Column -->
+                            <div class="col-md-6">
+                                <div class="col-md-6 mb-3">
+                                    @Html.LabelFor(m => m.Category, new { @class = "form-label" })
+                                    @Html.DropDownListFor(m => m.Category,
+                                        new SelectList(new List<string>
+                                        {
+                                            "Fiction","General" ,"Non-Fiction", "Science", "Technology", "History",
+                                            "Biography", "Mystery", "Romance", "Fantasy", "Educational"
+                                        }, Model.Category),
+                                        "Select Category",
+                                        new { @class = "form-select", required = "required" })
+                                    @Html.ValidationMessageFor(m => m.Category, "", new { @class = "text-danger small" })
+                                </div>
+
+
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold text-dark">
+                                        <i class="fas fa-copy me-2 text-primary"></i>
+                                        @Html.DisplayNameFor(m => m.TotalCopies)
+                                    </label>
+                                    @Html.TextBoxFor(m => m.TotalCopies, new { @class = "form-control form-control-lg", placeholder = "Enter total copies", type = "number", min = "1" })
+                                    @Html.ValidationMessageFor(m => m.TotalCopies, "", new { @class = "text-danger small mt-1" })
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold text-dark">
+                                        <i class="fas fa-check-circle me-2 text-primary"></i>
+                                        @Html.DisplayNameFor(m => m.AvailableCopies)
+                                    </label>
+                                    @Html.TextBoxFor(m => m.AvailableCopies, new { @class = "form-control form-control-lg", placeholder = "Enter available copies", type = "number", min = "0" })
+                                    @Html.ValidationMessageFor(m => m.AvailableCopies, "", new { @class = "text-danger small mt-1" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Info Note -->
+                        <div class="alert alert-info border-0 shadow-sm mt-4">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-info-circle text-info me-2"></i>
+                                <small>
+                                    <strong>Note:</strong> Available copies should not exceed total copies. Make sure all information is accurate before saving.
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="card border-0 shadow-sm mt-4">
+                            <div class="card-body p-4">
+                                <div class="d-flex flex-column flex-md-row gap-3 justify-content-center">
+                                    <button type="submit" class="btn btn-success btn-lg px-5 shadow-sm" id="saveBtn">
+                                        <span class="btn-content">
+                                            <i class="fas fa-save me-2"></i>
+                                            Save Changes
+                                        </span>
+                                        <span class="spinner-border spinner-border-sm me-2 d-none" id="saveSpinner"></span>
+                                        <span class="d-none" id="saveText">Saving...</span>
+                                    </button>
+                                    <a href="@Url.Action("Index", "Book")" class="btn btn-outline-secondary btn-lg px-5 shadow-sm">
+                                        <i class="fas fa-arrow-left me-2"></i>
+                                        Back to List
+                                    </a>
+                                </div>
+                                <div class="text-center mt-3">
+                                    <small class="text-muted">
+                                        <i class="fas fa-keyboard me-1"></i>
+                                        Press Ctrl+S to save quickly
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Tips Card -->
+                <div class="card border-0 shadow-sm mt-4">
+                    <div class="card-header bg-light">
+                        <h6 class="mb-0 text-dark">
+                            <i class="fas fa-lightbulb text-warning me-2"></i>
+                            Quick Tips
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul class="list-unstyled mb-0">
+                                    <li class="mb-2">
+                                        <i class="fas fa-check text-success me-2"></i>
+                                        <small>Use clear, descriptive titles</small>
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-check text-success me-2"></i>
+                                        <small>Include full author names</small>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul class="list-unstyled mb-0">
+                                    <li class="mb-2">
+                                        <i class="fas fa-check text-success me-2"></i>
+                                        <small>Verify ISBN format</small>
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-check text-success me-2"></i>
+                                        <small>Keep accurate copy counts</small>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+    <script>
+        $(function () {
+            // Add custom validation method
+            $.validator.addMethod("maxavailable", function (value, element) {
+                const total = parseInt($('#TotalCopies').val(), 10);
+                const available = parseInt(value, 10);
+                return available <= total;
+            }, "Available copies must not exceed total copies.");
+
+            // Attach validation to AvailableCopies field
+            $('#AvailableCopies').rules("add", { maxavailable: true });
+
+            // Ctrl+S shortcut
+            $(document).on('keydown', function (e) {
+                if (e.ctrlKey && e.keyCode === 83) {
+                    e.preventDefault();
+                    $('#editBookForm').submit();
+                }
+            });
+
+            // Button click handler
+            $('#saveBtn').click(function () {
+                console.log("save button clicked");
+                performAjaxUpdate();
+            });
+
+            // Function to perform AJAX update
+            function performAjaxUpdate() {
+
+                // Serialize form data manually since it's not a form anymore
+                // Prepare form data
+                const formData = {
+                    BookId: $('#BookId').val().trim(),
+                    Title: $('#Title').val().trim(),
+                    Author: $('#Author').val().trim(),
+                    ISBN: $('#ISBN').val().trim(),
+                    Category: $('#Category').val(),
+                    TotalCopies: parseInt($('#TotalCopies').val()) || 0,
+                    AvailableCopies: parseInt($('#AvailableCopies').val()) || 0,
+                };
+                console.log("formData", formData);
+                $.post('@Url.Action("Edit", "Book")', formData)
+                    .done(function (res) {
+                        if (res.success) {
+                            showMsg('success', '✅ Book updated! Redirecting...');
+                            setTimeout(() => location.href = res.redirectUrl || '@Url.Action("Index", "Book")', 10000);
+                        } else {
+                            showMsg('danger', '❌ Update failed. Try again.');
+                            toggleLoading(false);
+                        }
+                    })
+                    .fail(() => {
+                        showMsg('danger', '🚨 Server error occurred.');
+                        toggleLoading(false);
+                    });
+            }
+
+            function showMsg(type, text) {
+                $('#resultMsg')
+                    .removeClass()
+                    .addClass(`alert alert-${type} alert-dismissible fade show`)
+                    .find('#alertMessage').text(text)
+                    .end().fadeIn();
+            }
+        });
+    </script>
+}

@@ -17,14 +17,28 @@ namespace Library.Core.Services.Books
             _bookRepository = bookRepository;
         }
 
-        public Task AddBookAsync(Book member)
+        public Task AddBookAsync(Book book)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return _bookRepository.AddAsync(book);
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Error adding book.", ex);
+            }
         }
 
         public Task DeleteBookAsync(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return _bookRepository.DeleteAsync(id);
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"Error deleting book with ID {id}.", ex);
+            }
         }
 
         public Task<IEnumerable<Book>> GetAllBookAsync()
@@ -42,12 +56,26 @@ namespace Library.Core.Services.Books
 
         public Task<Book> GetBookByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return _bookRepository.GetByIdAsync(id);
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"Error fetching book with ID {id}.", ex);
+            }
         }
 
-        public Task UpdateBookAsync(Book member)
+        public Task UpdateBookAsync(Book book)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return _bookRepository.UpdateAsync(book);
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Error updating book.", ex);
+            }
         }
     }
 }

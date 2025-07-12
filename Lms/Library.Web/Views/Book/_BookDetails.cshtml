@@ -1,0 +1,72 @@
+﻿@model Library.Core.Models.Book
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="card-title mb-0">📖 Book Details</h3>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="window.location.href='@Url.Action("Index")'">
+                        ← Back to List
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>Title:</strong>
+                            <p class="text-primary">@Model.Title</p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Author:</strong>
+                            <p>@Model.Author</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>ISBN:</strong>
+                            <p><code>@Model.ISBN</code></p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Category:</strong>
+                            <p><span class="badge bg-info">@Model.Category</span></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>Total Copies:</strong>
+                            <p><span class="badge bg-secondary fs-6">@Model.TotalCopies</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Available Copies:</strong>
+                            <p>
+                                @if (Model.AvailableCopies > 5)
+                                {
+                                    <span class="badge bg-success fs-6">@Model.AvailableCopies Available</span>
+                                }
+                                else if (Model.AvailableCopies > 0)
+                                {
+                                    <span class="badge bg-warning fs-6">@Model.AvailableCopies Available</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger fs-6">Out of Stock</span>
+                                }
+                            </p>
+                        </div>
+                    </div>
+                   
+                </div>
+                <div class="card-footer">
+                    <div class="btn-group">
+                        <a href="@Url.Action("Edit", new { id = Model.BookId })" class="btn btn-warning">
+                            📝 Edit Book
+                        </a>
+                        <button type="button" class="btn btn-secondary" onclick="window.location.href='@Url.Action("Index")'">
+                            📋 Back to List
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

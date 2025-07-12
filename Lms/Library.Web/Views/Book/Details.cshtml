@@ -1,0 +1,67 @@
+﻿@model Library.Core.Models.Book
+
+@{
+    ViewBag.Title = "Book Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">📖 Book Details</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>Title:</strong>
+                            <p>@Model.Title</p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Author:</strong>
+                            <p>@Model.Author</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>ISBN:</strong>
+                            <p>@Model.ISBN</p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Category:</strong>
+                            <p><span class="badge bg-info">@Model.Category</span></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>Total Copies:</strong>
+                            <p><span class="badge bg-secondary">@Model.TotalCopies</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Available Copies:</strong>
+                            <p>
+                                @if (Model.AvailableCopies > 5)
+                                {
+                                    <span class="badge bg-success">@Model.AvailableCopies</span>
+                                }
+                                else if (Model.AvailableCopies > 0)
+                                {
+                                    <span class="badge bg-warning">@Model.AvailableCopies</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">@Model.AvailableCopies</span>
+                                }
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="@Url.Action("Edit", new { id = Model.BookId })" class="btn btn-warning">Edit</a>
+                    <a href="@Url.Action("Index")" class="btn btn-secondary">Back to List</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

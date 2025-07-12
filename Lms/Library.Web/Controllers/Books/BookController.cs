@@ -19,100 +19,117 @@ namespace Library.Web.Controllers.Books
             _bookService = bookService;
         }
 
-
         // GET: Book
         [HttpGet]
-            public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index()
+        {
+            var books = await _bookService.GetAllBookAsync();
+            return View(books);
+        }
+
+        // GET: Book/Create
+        [HttpGet]
+        public ActionResult Create()
+        {
+            return View();
+        }
+        // POST: Book/Create
+        [HttpPost]
+        public async Task<JsonResult> Create(Book book)
+        {
+            if (ModelState.IsValid)
             {
-                var books = await _bookService.GetAllBookAsync();
-                return View(books);
+                await _bookService.AddBookAsync(book);
+                return Json(new { success = true, redirectUrl = Url.Action("Index", "Book") });
+            }
+            return Json(new { success = false });
+        }
+
+        //GET: Book/Edit/5
+        [HttpGet]
+        public async Task<ActionResult> Edit(int id)
+        {
+            var book = await _bookService.GetBookByIdAsync(id);
+            if (book == null)
+            {
+                return HttpNotFound();
+            }
+            return View(book);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> Edit(Book book)
+        {
+            if (ModelState.IsValid)
+            {
+                await _bookService.UpdateBookAsync(book);
+                return Json(new { success = true, redirectUrl = Url.Action("Index", "Book") });
+            }
+            return Json(new { success = false });
+        }
+
+        // GET: Book/Delete/5
+        [HttpGet]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var book = await _bookService.GetBookByIdAsync(id);
+            if (book == null)
+            {
+                return HttpNotFound();
+            }
+            return View(book);
+        }
+
+        // POST: Book/Delete/5
+        [HttpPost]
+        public async Task<JsonResult> Delete(int id, FormCollection collection)
+        {
+            try
+            {
+                await _bookService.DeleteBookAsync(id);
+                return Json(new { success = true, redirectUrl = Url.Action("Index", "Book") });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        // GET: Book/Details/5
+        [HttpGet]
+        public async Task<ActionResult> Details(int id)
+        {
+            var book = await _bookService.GetBookByIdAsync(id);
+            if (book == null)
+            {
+                return HttpNotFound();
             }
 
-            //[HttpGet]
-            //public ActionResult Create()
-            //{
-            //    return View();
-            //}
+            // Return full view for normal page requests (refresh/direct navigation)
+            return View(book);
+        }
 
-            //[HttpPost]
-            //public async Task<JsonResult> Create(Book book)
-            //{
-            //    if (ModelState.IsValid)
-            //    {
-            //        await _bookService.AddAsync(book);
-            //        return Json(new { success = true, redirectUrl = Url.Action("Index", "Book") });
-            //    }
+        // GET: Book/DetailsPartial/5 - For AJAX requests
+        [HttpGet]
+        public async Task<ActionResult> DetailsPartial(int id)
+        {
+            var book = await _bookService.GetBookByIdAsync(id);
+            if (book == null)
+            {
+                return HttpNotFound();
+            }
 
-            //    return Json(new { success = false });
-            //}
+            // Return partial view for AJAX calls
+            return PartialView("_BookDetails", book);
+        }
 
-            //// GET: Book/Edit/5
-            //[HttpGet]
-            //public async Task<ActionResult> Edit(int id)
-            //{
-            //    var book = await _bookService.GetByIdAsync(id);
-            //    if (book == null)
-            //    {
-            //        return HttpNotFound();
-            //    }
-            //    return View(book);
-            //}
-            //[HttpPost]
-            //public async Task<JsonResult> Edit(Book book)
-            //{
-            //    if (ModelState.IsValid)
-            //    {
-            //        await _bookService.UpdateAsync(book);
-            //        return Json(new { success = true, redirectUrl = Url.Action("Index", "Book") });
-            //    }
-            //    return Json(new { success = false });
-            //}
-            //// GET: Book/Delete/5
-            //[HttpGet]
-            //public async Task<ActionResult> Delete(int id)
-            //{
-            //    var book = await _bookService.GetByIdAsync(id);
-            //    if (book == null)
-            //    {
-            //        return HttpNotFound();
-            //    }
-            //    return View(book);
-            //}
-
-            //// POST: Book/Delete/5
-            //[HttpPost]
-            //public async Task<JsonResult> Delete(int id, FormCollection collection)
-            //{
-            //    try
-            //    {
-            //        await _bookService.DeleteAsync(id);
-            //        return Json(new { success = true, redirectUrl = Url.Action("Index", "Book") });
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        return Json(new { success = false, message = ex.Message });
-            //    }
-            //}
-
-            //// GET: Book/Details/5
-            //[HttpGet]
-            //public async Task<ActionResult> Details(int id)
-            //{
-            //    var book = await _bookService.GetByIdAsync(id);
-            //    if (book == null)
-            //        return HttpNotFound();
-            //    return View(book);
-            //}
-
-            //[HttpGet]
-            //public async Task<JsonResult> GetBookDetails(int id)
-            //{
-            //    var book = await _bookService.GetByIdAsync(id);
-            //    if (book == null)
-            //        return Json(new { success = false, message = "Book not found" }, JsonRequestBehavior.AllowGet);
-
-            //    return Json(book, JsonRequestBehavior.AllowGet);
-            //}
-
+        [HttpGet]
+        public async Task<JsonResult> GetBookDetails(int id)
+        {
+            var book = await _bookService.GetBookByIdAsync(id);
+            if (book == null)
+                return Json(new { success = false, message = "Book not found" }, JsonRequestBehavior.AllowGet);
+            return Json(book, JsonRequestBehavior.AllowGet);
         }
     }
+ }
