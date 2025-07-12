@@ -2,8 +2,6 @@
 using Library.Core.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Library.Core.Services.Books
@@ -17,64 +15,78 @@ namespace Library.Core.Services.Books
             _bookRepository = bookRepository;
         }
 
-        public Task AddBookAsync(Book book)
+        /// <summary>
+        /// Adds a new book asynchronously.
+        /// </summary>
+        public async Task AddBookAsync(Book book)
         {
             try
             {
-                return _bookRepository.AddAsync(book);
+                await _bookRepository.AddAsync(book);
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("Error adding book.", ex);
+                throw new ApplicationException("Error occurred while adding the book.", ex);
             }
         }
 
-        public Task DeleteBookAsync(int id)
+        /// <summary>
+        /// Deletes a book by ID asynchronously.
+        /// </summary>
+        public async Task DeleteBookAsync(int id)
         {
             try
             {
-                return _bookRepository.DeleteAsync(id);
+                await _bookRepository.DeleteAsync(id);
             }
             catch (Exception ex)
             {
-                throw new ApplicationException($"Error deleting book with ID {id}.", ex);
+                throw new ApplicationException($"Error occurred while deleting the book with ID {id}.", ex);
             }
         }
 
-        public Task<IEnumerable<Book>> GetAllBookAsync()
+        /// <summary>
+        /// Retrieves all books asynchronously.
+        /// </summary>
+        public async Task<IEnumerable<Book>> GetAllBookAsync()
         {
             try
             {
-                return _bookRepository.GetAllAsync();
+                return await _bookRepository.GetAllAsync();
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("Error fetching books.", ex);
-            }
-
-        }
-
-        public Task<Book> GetBookByIdAsync(int id)
-        {
-            try
-            {
-                return _bookRepository.GetByIdAsync(id);
-            }
-            catch (Exception ex)
-            {
-                throw new ApplicationException($"Error fetching book with ID {id}.", ex);
+                throw new ApplicationException("Error occurred while fetching all books.", ex);
             }
         }
 
-        public Task UpdateBookAsync(Book book)
+        /// <summary>
+        /// Retrieves a book by ID asynchronously.
+        /// </summary>
+        public async Task<Book> GetBookByIdAsync(int id)
         {
             try
             {
-                return _bookRepository.UpdateAsync(book);
+                return await _bookRepository.GetByIdAsync(id);
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("Error updating book.", ex);
+                throw new ApplicationException($"Error occurred while fetching the book with ID {id}.", ex);
+            }
+        }
+
+        /// <summary>
+        /// Updates a book asynchronously.
+        /// </summary>
+        public async Task UpdateBookAsync(Book book)
+        {
+            try
+            {
+                await _bookRepository.UpdateAsync(book);
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Error occurred while updating the book.", ex);
             }
         }
     }

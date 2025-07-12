@@ -10,7 +10,7 @@
         <div class="col-lg-8">
             <div class="card shadow">
                 <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">📘 Add New Book</h4>
+                    <h4 class="mb-0">Add New Book</h4>
                 </div>
 
                 <div class="card-body">
@@ -81,8 +81,8 @@
 
     <script>
         $(document).ready(function() {
-            // Auto-adjust available copies when total copies changes
-            $('#TotalCopies').on('input', function() {
+
+            $('#TotalCopies').on('input', function () {
                 const totalCopies = parseInt($(this).val()) || 0;
                 const availableCopies = parseInt($('#AvailableCopies').val()) || 0;
 
@@ -91,7 +91,7 @@
                 }
             });
 
-            // Handle form submission
+            
             $('#submitBtn').on('click', function(e) {
                 e.preventDefault();
                 performAjaxSubmit();
@@ -106,7 +106,6 @@
             });
 
             function performAjaxSubmit() {
-                // Clear previous validation messages
                 $('.text-danger').text('');
 
                 // Validate form data
@@ -131,10 +130,8 @@
                     Category: $('#Category').val(),
                     TotalCopies: parseInt($('#TotalCopies').val()) || 0,
                     AvailableCopies: parseInt($('#AvailableCopies').val()) || 0,
-                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
                 };
 
-                // Debug: Log form data
                 console.log('Form Data:', formData);
 
                 $.ajax({
@@ -146,21 +143,21 @@
                         console.log('Server Response:', result);
 
                         if (result.success) {
-                            alert('✅ Book added successfully!');
+                            alert('Book added successfully!');
                             window.location.href = result.redirectUrl || '@Url.Action("Index", "Book")';
                         } else {
                             // Handle validation errors from server
                             if (result.errors) {
                                 displayValidationErrors(result.errors);
                             } else {
-                                alert(result.message || '❌ Failed to save book. Please try again.');
+                                alert(result.message || 'Failed to save book. Please try again.');
                             }
                             resetButton();
                         }
                     },
                     error: function(xhr, status, error) {
                         console.error('AJAX Error:', xhr.responseText);
-                        alert('🚨 Server error. Please try again.');
+                        alert('Server error. Please try again.');
                         resetButton();
                     }
                 });
@@ -227,7 +224,6 @@
             }
 
             function displayValidationErrors(errors) {
-                // Clear existing validation messages
                 $('.text-danger').text('');
 
                 // Display server validation errors

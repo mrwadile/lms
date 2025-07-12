@@ -62,18 +62,18 @@
     <Compile Include="Repositories\BookRepository.cs" />
     <Compile Include="Repositories\Interfaces\IAuthRepository.cs" />
     <Compile Include="Repositories\Interfaces\IBookRepository.cs" />
-    <Compile Include="Repositories\Interfaces\IMember.cs" />
+    <Compile Include="Repositories\Interfaces\IMemberRepository.cs" />
     <Compile Include="Repositories\MemberRepository.cs" />
     <Compile Include="Services\Books\BookService.cs" />
     <Compile Include="Services\Books\IBookService.cs" />
+    <Compile Include="Services\Members\IMemberService.cs" />
+    <Compile Include="Services\Members\MemberService.cs" />
     <Compile Include="Services\Report\IReportService.cs" />
     <Compile Include="Services\Report\ReportService.cs" />
     <Compile Include="Services\UserLogin\ILoginService.cs" />
     <Compile Include="Services\UserLogin\LoginService.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Services\Dashboaard\" />
-    <Folder Include="Services\Members\" />
     <Folder Include="Services\Reports\" />
   </ItemGroup>
   <ItemGroup>

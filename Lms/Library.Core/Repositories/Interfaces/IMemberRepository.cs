@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace Library.Core.Repositories.Interfaces
 {
-    public interface IMember
+    public interface IMemberRepository
     {
         Task<IEnumerable<Member>> GetAllAsync();
-        Task<Member> GetByIdAsync(int bookId);
-        Task AddAsync(Member book);
-        Task UpdateAsync(Member book);
-        Task DeleteAsync(int bookId);
+        Task<Member> GetByIdAsync(int memberId);
+        Task AddAsync(Member member);
+        Task UpdateAsync(Member member);
+        Task DeleteAsync(int memberId);
     }
 }

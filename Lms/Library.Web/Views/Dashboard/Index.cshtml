@@ -32,7 +32,7 @@
         </div>
     </div>
 
-    <!-- Statistics Cards -->
+    <!-- Cards -->
     <div class="row g-4 mb-5" id="statsCards">
         <div class="col-md-3">
             <div class="card text-white bg-primary shadow-sm h-100 stats-card" data-bs-toggle="tooltip"
@@ -156,7 +156,6 @@
 
     <!-- Data Tables and Actions -->
     <div class="row mb-5">
-        <!-- Enhanced Category Breakdown Table -->
         <div class="col-md-8">
             <div class="card shadow-sm">
                 <div class="card-header bg-light d-flex justify-content-between align-items-center">
@@ -196,7 +195,7 @@
             </div>
         </div>
 
-        <!-- Enhanced Quick Actions -->
+        <!-- Quick Actions -->
         <div class="col-md-4">
             <div class="card shadow-sm">
                 <div class="card-header bg-light">
@@ -223,7 +222,6 @@
     </div>
 </div>
 
-<!-- Toast Container for Notifications -->
 <div class="toast-container position-fixed top-0 end-0 p-3">
     <div id="notificationToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="toast-header">
@@ -233,7 +231,6 @@
             <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
         <div class="toast-body" id="toastMessage">
-            <!-- Toast message will be inserted here -->
         </div>
     </div>
 </div>
@@ -242,7 +239,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
-        // Global variables
         let barChart, pieChart;
         let currentTimeRange = 7;
 
@@ -255,7 +251,6 @@
         });
 
         function initializeDashboard() {
-            // Initialize charts
             const barCtx = document.getElementById('barChart').getContext('2d');
             const pieCtx = document.getElementById('pieChart').getContext('2d');
 
@@ -339,7 +334,6 @@
         }
 
         function setupEventHandlers() {
-            // Refresh button
             $('#refreshData').on('click', function() {
                 $(this).prop('disabled', true);
                 loadDashboardData();
@@ -348,7 +342,6 @@
                 }, 2000);
             });
 
-            // Time range dropdown
             $('.dropdown-item[data-range]').on('click', function(e) {
                 e.preventDefault();
                 currentTimeRange = parseInt($(this).data('range'));
@@ -370,7 +363,6 @@
                 loadRecentActivity();
             });
 
-            // Stats card hover effects
             $('.stats-card').on('mouseenter', function() {
                 $(this).addClass('shadow-lg');
             }).on('mouseleave', function() {
@@ -381,7 +373,6 @@
         function loadDashboardData() {
             showToast('Loading dashboard data...', 'info');
 
-            // Simulate API call with AJAX
             $.ajax({
                 url: '@Url.Action("GetDashboardData", "Dashboard")',
                 type: 'GET',
@@ -394,7 +385,6 @@
                     showToast('Dashboard updated successfully!', 'success');
                 },
                 error: function() {
-                    // Fallback to ViewBag data if AJAX fails
                     loadFallbackData();
                     showToast('Using cached data - some features may be limited', 'warning');
                 }
@@ -480,14 +470,50 @@
             $('#chartLoader1, #chartLoader2').removeClass('d-none');
 
             setTimeout(() => {
-                // Update bar chart
-                barChart.data.labels = chartData.barChart.labels;
-                barChart.data.datasets[0].data = chartData.barChart.data;
+                // --------------
+                //  Bar Chart
+                // -------------
+                const weekDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+                const barLabels = [];
+                const barValues = [];
+
+                // Ensure all 7 days are present (even if value is 0)
+                weekDays.forEach(day => {
+                    barLabels.push(day);
+                    barValues.push(chartData.barChart?.[day] ?? 0);
+                });
+
+                const hasBarData = barValues.some(val => val > 0);
+
+                if (hasBarData) {
+                    barChart.data.labels = barLabels;
+                    barChart.data.datasets[0].data = barValues;
+                    barChart.data.datasets[0].backgroundColor = 'rgba(54, 162, 235, 0.7)';
+                } else {
+                    barChart.data.labels = ["No Data"];
+                    barChart.data.datasets[0].data = [0];
+                    barChart.data.datasets[0].backgroundColor = 'rgba(200, 200, 200, 0.6)';
+                }
+
                 barChart.update();
 
-                // Update pie chart
-                pieChart.data.labels = chartData.pieChart.labels;
-                pieChart.data.datasets[0].data = chartData.pieChart.data;
+                // ------------
+                // Pie Chart
+                // ------------
+                const hasPieData = chartData?.pieChart?.labels?.length > 0 &&
+                    chartData?.pieChart?.data?.some(x => x > 0);
+
+                if (hasPieData) {
+                    pieChart.data.labels = chartData.pieChart.labels;
+                    pieChart.data.datasets[0].data = chartData.pieChart.data;
+                    pieChart.data.datasets[0].backgroundColor = generateRandomColors(chartData.pieChart.labels.length);
+                } else {
+                    pieChart.data.labels = ["No Data"];
+                    pieChart.data.datasets[0].data = [0];
+                    pieChart.data.datasets[0].backgroundColor = ['#cccccc'];
+                }
+
                 pieChart.update();
 
                 $('#chartLoader1, #chartLoader2').addClass('d-none');

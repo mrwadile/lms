@@ -1,0 +1,213 @@
+﻿@model Library.Core.Models.Member
+
+@{
+    ViewBag.Title = "Edit Member";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <!-- Header Section -->
+            <div class="card border-0 shadow-lg mb-4">
+                <div class="card-header bg-primary text-white text-center py-4">
+                    <div class="d-flex align-items-center justify-content-center">
+                        <i class="fas fa-edit fa-2x me-3"></i>
+                        <div>
+                            <h2 class="mb-0 fw-bold">Edit Member</h2>
+                            <p class="mb-0 opacity-75">Update member information</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="resultMsg" class="alert alert-dismissible fade" role="alert" style="display: none;">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <span id="alertMessage"></span>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <!-- Edit Form Card -->
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-light border-bottom">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-member text-primary me-2"></i>
+                        <h4 class="mb-0 text-dark">Member Information</h4>
+                    </div>
+                </div>
+                <div class="card-body p-4">
+                    <div id="editMemberForm" autocomplete="off" novalidate>
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(m => m.MemberId)
+                        <div class="row g-4">
+                            <!-- Left Column -->
+                            <div class="col-md-6">
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold text-dark">
+                                        <i class="fas fa-user me-2 text-primary"></i>
+                                        @Html.DisplayNameFor(m => m.FullName)
+                                    </label>
+                                    @Html.TextBoxFor(m => m.FullName, new { @class = "form-control form-control-lg", placeholder = "Enter full name" })
+                                    @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "text-danger small mt-1" })
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold text-dark">
+                                        <i class="fas fa-mobile-alt me-2 text-primary"></i>
+                                        @Html.DisplayNameFor(m => m.Mobile)
+                                    </label>
+                                    @Html.TextBoxFor(m => m.Mobile, new { @class = "form-control form-control-lg", placeholder = "Enter mobile number" })
+                                    @Html.ValidationMessageFor(m => m.Mobile, "", new { @class = "text-danger small mt-1" })
+                                </div>
+                            </div>
+
+                            <!-- Right Column -->
+                            <div class="col-md-6">
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold text-dark">
+                                        <i class="fas fa-envelope me-2 text-primary"></i>
+                                        @Html.DisplayNameFor(m => m.Email)
+                                    </label>
+                                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control form-control-lg", placeholder = "Enter email address" })
+                                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger small mt-1" })
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold text-dark">
+                                        <i class="fas fa-toggle-on me-2 text-primary"></i>
+                                        @Html.DisplayNameFor(m => m.IsActive)
+                                    </label>
+                                    <div class="form-check form-switch mt-2">
+                                        @Html.CheckBoxFor(m => m.IsActive, new { @class = "form-check-input", style = "transform: scale(1.4);" })
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.IsActive, "", new { @class = "text-danger small mt-1" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="card border-0 shadow-sm mt-4">
+                            <div class="card-body p-4">
+                                <div class="d-flex flex-column flex-md-row gap-3 justify-content-center">
+                                    <button type="button" class="btn btn-success btn-lg px-5 shadow-sm" id="saveBtn">
+                                        <span class="btn-content">
+                                            <i class="fas fa-save me-2"></i>
+                                            Save Changes
+                                        </span>
+                                        <span class="spinner-border spinner-border-sm me-2 d-none" id="saveSpinner"></span>
+                                        <span class="d-none" id="saveText">Saving...</span>
+                                    </button>
+                                    <a href="@Url.Action("Index", "Member")" class="btn btn-outline-secondary btn-lg px-5 shadow-sm">
+                                        <i class="fas fa-arrow-left me-2"></i>
+                                        Back to List
+                                    </a>
+                                </div>
+                                <div class="text-center mt-3">
+                                    <small class="text-muted">
+                                        <i class="fas fa-keyboard me-1"></i>
+                                        Press Ctrl+S to save quickly
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(function () {
+            // Ctrl+S shortcut
+            $(document).on('keydown', function (e) {
+                if (e.ctrlKey && e.keyCode === 83) {
+                    e.preventDefault();
+                    performAjaxUpdate();
+                }
+            });
+
+            // Button click handler
+            $('#saveBtn').click(function () {
+                performAjaxUpdate();
+            });
+
+            // Function to perform AJAX update
+            function performAjaxUpdate() {
+                if (!validateForm()) {
+                    showMsg('danger', 'Please fill all required fields correctly.');
+                    return;
+                }
+
+                toggleLoading(true);
+
+                var formData = {
+                    MemberId: $('#MemberId').val(),
+                    FullName: $('#FullName').val(),
+                    Mobile: $('#Mobile').val(),
+                    Email: $('#Email').val(),
+                    IsActive: $('#IsActive').is(':checked'),
+                };
+
+                $.post('@Url.Action("Edit", "Member")', formData)
+                    .done(function (res) {
+                        if (res.success) {
+                            showMsg('success', 'Member updated! Redirecting...');
+                            setTimeout(() => location.href = res.redirectUrl || '@Url.Action("Index", "Member")', 1000);
+                        } else {
+                            showMsg('danger', 'Update failed. Try again.');
+                            toggleLoading(false);
+                        }
+                    })
+                    .fail(() => {
+                        showMsg('danger', 'Server error occurred.');
+                        toggleLoading(false);
+                    });
+            }
+
+            // Basic form validation
+            function validateForm() {
+                var isValid = true;
+                var fullName = $('#FullName').val().trim();
+                var mobile = $('#Mobile').val().trim();
+                var email = $('#Email').val().trim();
+
+                if (fullName === '') {
+                    isValid = false;
+                }
+                if (mobile === '') {
+                    isValid = false;
+                }
+                if (email === '' || !isValidEmail(email)) {
+                    isValid = false;
+                }
+
+                return isValid;
+            }
+
+            // Email validation helper
+            function isValidEmail(email) {
+                var emailRegex = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
+                return emailRegex.test(email);
+            }
+
+            function showMsg(type, text) {
+                $('#resultMsg')
+                    .removeClass()
+                    .addClass(`alert alert-${type} alert-dismissible fade show`)
+                    .find('#alertMessage').text(text)
+                    .end().fadeIn();
+            }
+
+            function toggleLoading(isLoading) {
+                $('#saveBtn').prop('disabled', isLoading);
+                $('#saveSpinner').toggleClass('d-none', !isLoading);
+                $('#saveText').toggleClass('d-none', !isLoading);
+                $('.btn-content').toggleClass('d-none', isLoading);
+            }
+        });
+    </script>
+}

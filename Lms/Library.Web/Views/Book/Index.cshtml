@@ -8,7 +8,7 @@
 <div class="container mt-4">
     <!-- Header Section -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="text-primary">📘 Book List</h2>
+        <h2 class="text-primary">Book List</h2>
         @Html.ActionLink("➕ Add New Book", "Create", null, new { @class = "btn btn-success" })
     </div>
 
@@ -95,19 +95,19 @@
 @section scripts {
     <script>
         $(document).ready(function () {
-            // 🔍 Search functionality
+            // Search functionality
             $('#searchBooks').on('input', function () {
                 const searchTerm = $(this).val().toLowerCase();
                 filterBooks(searchTerm);
             });
 
-            // ❌ Clear search
+            // Clear search
             $('#clearSearch').on('click', function () {
                 $('#searchBooks').val('');
                 filterBooks('');
             });
 
-            // 🔎 Filter books function
+            // Filter books function
             function filterBooks(searchTerm) {
                 const rows = $('.book-row');
                 let visibleCount = 0;
@@ -133,7 +133,6 @@
                 }
             }
 
-            // 📘 AJAX Details functionality - FIXED VERSION
             $(document).on('click', '.view-details-btn', function (e) {
                 e.preventDefault();
                 const bookId = $(this).data('id');
@@ -141,7 +140,7 @@
                 window.location.href = url;
             });
 
-            // 🗑️ AJAX Delete functionality
+            // AJAX Delete functionality
             $(document).on('click', '.delete-btn', function (e) {
                 e.preventDefault();
                 const bookId = $(this).data('id');

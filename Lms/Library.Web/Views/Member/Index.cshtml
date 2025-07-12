@@ -1,0 +1,150 @@
+﻿@model IEnumerable<Library.Core.Models.Member>
+
+@{
+    ViewBag.Title = "Members";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary">Member List</h2>
+        @Html.ActionLink("➕ Add New Member", "Create", null, new { @class = "btn btn-success" })
+    </div>
+
+    <!-- Search Section -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-8">
+                    <input type="text" class="form-control" id="searchMembers" placeholder="Search by member name...">
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-outline-secondary" id="clearSearch">Clear</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-striped mb-0" id="membersTable">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Full Name</th>
+                            <th>Mobile</th>
+                            <th>Email</th>
+                            <th>IsActive</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="membersTableBody">
+                        @foreach (var item in Model)
+                        {
+                            <tr class="member-row">
+                                <td class="member-fullname">
+                                    <strong>@item.FullName</strong>
+                                </td>
+                                <td>@item.Mobile</td>
+                                <td>@item.Email</td>
+                                <td>
+                                    <span class="badge bg-info">@item.IsActive</span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group btn-group-sm">
+                                        <button class="btn btn-sm btn-info text-white me-1 view-details-btn" data-id="@item.MemberId">Details</button>
+                                        <a href="@Url.Action("Edit", new { id = item.MemberId })" class="btn btn-outline-warning" title="Edit">Edit</a>
+                                        <button class="btn btn-outline-danger delete-btn" data-id="@item.MemberId" title="Delete">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- No Results Message -->
+        <div id="noResults" class="card-body text-center py-4" style="display: none;">
+            <p class="text-muted">No member found matching your search.</p>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function() {
+            // Search functionality
+            $('#searchMembers').on('input', function() {
+                const searchTerm = $(this).val().toLowerCase();
+                filterMembers(searchTerm);
+            });
+
+            // Clear search
+            $('#clearSearch').on('click', function() {
+                $('#searchMembers').val('');
+                filterMembers('');
+            });
+
+            // Filter members function
+            function filterMembers(searchTerm) {
+                const rows = $('.member-row');
+                let visibleCount = 0;
+
+                rows.each(function() {
+                    const memberFullName = $(this).find('.member-fullname strong').text().toLowerCase();
+
+                    if (searchTerm === '' || memberFullName.includes(searchTerm)) {
+                        $(this).show();
+                        visibleCount++;
+                    } else {
+                        $(this).hide();
+                    }
+                });
+
+                // Show/hide no results message
+                if (visibleCount === 0 && searchTerm !== '') {
+                    $('#noResults').show();
+                    $('#memberssTable').hide();
+                } else {
+                    $('#noResults').hide();
+                    $('#membersTable').show();
+                }
+            }
+             $(document).on('click', '.view-details-btn', function (e) {
+                 e.preventDefault();
+                 const memberId = $(this).data('id');
+                 const url = '@Url.Action("Details", "Member")' + '/' + memberId;
+                 window.location.href = url;
+             });
+
+            $(document).on('click', '.delete-btn', function (e) {
+                e.preventDefault();
+                const memberId = $(this).data('id');
+                const row = $(this).closest('tr');
+
+                if (confirm('Are you sure you want to delete this member?')) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("Delete", "Member")',
+                        data: { id: memberId },
+                        success: function(result) {
+                            if (result.success) {
+                                row.fadeOut(300, function() {
+                                    $(this).remove();
+                                });
+                                alert('Member deleted successfully!');
+                            } else {
+                                alert(result.message || 'Failed to delete member.');
+                            }
+                        },
+                        error: function() {
+                            alert('An error occurred while deleting the member.');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}

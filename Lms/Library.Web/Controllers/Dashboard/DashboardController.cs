@@ -12,7 +12,7 @@ using System.Web.Mvc;
 
 namespace Library.Web.Controllers.Dashboard
 {
-    public class DashboardController : Controller
+    public class DashboardController : BaseController
     {
         private readonly IReportService _reportService;
 

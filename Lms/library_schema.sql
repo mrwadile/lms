@@ -80,3 +80,149 @@ BEGIN
         (SELECT COUNT(*) FROM BookMaster) AS TotalBooks,
         (SELECT COUNT(*) FROM BookIssue) AS IssuedBooks
 END
+
+-- Book Master
+--sp_AddBook
+GO
+CREATE PROCEDURE sp_AddBook
+    @Title NVARCHAR(200),
+    @Author NVARCHAR(100),
+    @ISBN NVARCHAR(20),
+    @TotalCopies INT,
+    @AvailableCopies INT,
+    @Category NVARCHAR(100)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    INSERT INTO BookMaster (Title, Author, ISBN, TotalCopies, AvailableCopies, Category)
+    VALUES (@Title, @Author, @ISBN, @TotalCopies, @AvailableCopies, @Category);
+
+    SELECT SCOPE_IDENTITY();
+END
+
+--sp_UpdateBook
+GO
+CREATE PROCEDURE sp_UpdateBook
+    @BookId INT,
+    @Title NVARCHAR(200),
+    @Author NVARCHAR(100),
+    @ISBN NVARCHAR(20),
+    @TotalCopies INT,
+    @AvailableCopies INT,
+    @Category NVARCHAR(100)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE BookMaster
+    SET Title = @Title,
+        Author = @Author,
+        ISBN = @ISBN,
+        TotalCopies = @TotalCopies,
+        AvailableCopies = @AvailableCopies,
+        Category = @Category
+    WHERE BookId = @BookId;
+END
+
+--sp_DeleteBook
+GO
+CREATE PROCEDURE sp_DeleteBook
+    @BookId INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DELETE FROM BookMaster WHERE BookId = @BookId;
+END
+
+--Member Master
+--sp_GetAllMembers
+Go
+CREATE PROCEDURE sp_GetAllMembers
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        MemberId,
+        FullName,
+        Mobile,
+        Email,
+        IsActive
+    FROM 
+        MemberMaster
+    ORDER BY 
+        FullName;
+END;
+
+--sp_GetMemberById
+GO
+CREATE PROCEDURE sp_GetMemberById
+    @MemberId INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        MemberId,
+        FullName,
+        Mobile,
+        Email,
+        IsActive
+    FROM 
+        MemberMaster
+    WHERE 
+        MemberId = @MemberId;
+END
+
+
+--sp_UpdateMember
+GO
+CREATE PROCEDURE sp_UpdateMember
+    @MemberId INT,
+    @FullName NVARCHAR(100),
+    @Mobile NVARCHAR(15),
+    @Email NVARCHAR(100),
+    @IsActive BIT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE MemberMaster
+    SET
+        FullName = @FullName,
+        Mobile = @Mobile,
+        Email = @Email,
+        IsActive = @IsActive
+    WHERE
+        MemberId = @MemberId;
+END
+
+--sp_AddMember
+GO
+CREATE PROCEDURE sp_AddMember
+    @FullName NVARCHAR(100),
+    @Mobile NVARCHAR(15),
+    @Email NVARCHAR(100),
+    @IsActive BIT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    INSERT INTO MemberMaster (FullName, Mobile, Email, IsActive)
+    VALUES (@FullName, @Mobile, @Email, @IsActive);
+
+    SELECT SCOPE_IDENTITY() AS NewMemberId;
+END
+
+
+--sp_DeleteMember
+GO
+CREATE PROCEDURE sp_DeleteMember
+    @MemberId INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DELETE FROM MemberMaster WHERE MemberId = @MemberId;
+END

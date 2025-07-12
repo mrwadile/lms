@@ -7,12 +7,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Diagnostics;
 
 namespace Library.Web.Controllers.Books
 {
     public class BookController : BaseController
     {
-            private readonly IBookService _bookService;
+        private readonly IBookService _bookService;
 
         public BookController(IBookService bookService)
         {
@@ -23,8 +24,16 @@ namespace Library.Web.Controllers.Books
         [HttpGet]
         public async Task<ActionResult> Index()
         {
-            var books = await _bookService.GetAllBookAsync();
-            return View(books);
+            try 
+            {
+                var books = await _bookService.GetAllBookAsync();
+                return View(books);
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceError($"[Index] Failed to fetch book list: {ex}");
+                return View("Error");
+            }
         }
 
         // GET: Book/Create
@@ -33,51 +42,85 @@ namespace Library.Web.Controllers.Books
         {
             return View();
         }
+
         // POST: Book/Create
         [HttpPost]
         public async Task<JsonResult> Create(Book book)
         {
-            if (ModelState.IsValid)
+            try 
             {
-                await _bookService.AddBookAsync(book);
-                return Json(new { success = true, redirectUrl = Url.Action("Index", "Book") });
+                if (ModelState.IsValid)
+                {
+                    await _bookService.AddBookAsync(book);
+                    return Json(new { success = true, redirectUrl = Url.Action("Index", "Book") });
+                }
+                return Json(new { success = false });
             }
-            return Json(new { success = false });
+            catch (Exception ex)
+            {
+                Trace.TraceError($"[Create POST] Error creating book: {ex}");
+                return Json(new { success = false, message = "Error creating book." });
+            }
         }
 
-        //GET: Book/Edit/5
+        // GET: Book/Edit/5
         [HttpGet]
         public async Task<ActionResult> Edit(int id)
         {
-            var book = await _bookService.GetBookByIdAsync(id);
-            if (book == null)
+            try 
             {
-                return HttpNotFound();
+                var book = await _bookService.GetBookByIdAsync(id);
+                if (book == null)
+                {
+                    return HttpNotFound();
+                }
+                return View(book);
             }
-            return View(book);
+            catch (Exception ex)
+            {
+                Trace.TraceError($"[Edit GET] Error fetching book with ID {id}: {ex}");
+                return View("Error");
+            }
         }
 
+        // POST: Book/Edit
         [HttpPost]
         public async Task<JsonResult> Edit(Book book)
         {
-            if (ModelState.IsValid)
+            try 
             {
-                await _bookService.UpdateBookAsync(book);
-                return Json(new { success = true, redirectUrl = Url.Action("Index", "Book") });
+                if (ModelState.IsValid)
+                {
+                    await _bookService.UpdateBookAsync(book);
+                    return Json(new { success = true, redirectUrl = Url.Action("Index", "Book") });
+                }
+                return Json(new { success = false });
             }
-            return Json(new { success = false });
+            catch (Exception ex)
+            {
+                Trace.TraceError($"[Edit POST] Error updating book with ID {book.BookId}: {ex}");
+                return Json(new { success = false, message = "Error updating book." });
+            }
         }
 
         // GET: Book/Delete/5
         [HttpGet]
         public async Task<ActionResult> Delete(int id)
         {
-            var book = await _bookService.GetBookByIdAsync(id);
-            if (book == null)
+            try 
             {
-                return HttpNotFound();
+                var book = await _bookService.GetBookByIdAsync(id);
+                if (book == null)
+                {
+                    return HttpNotFound();
+                }
+                return View(book);
             }
-            return View(book);
+            catch (Exception ex)
+            {
+                Trace.TraceError($"[Delete GET] Error loading delete view for book ID {id}: {ex}");
+                return View("Error");
+            }
         }
 
         // POST: Book/Delete/5
@@ -91,6 +134,7 @@ namespace Library.Web.Controllers.Books
             }
             catch (Exception ex)
             {
+                Trace.TraceError($"[Delete POST] Error deleting book with ID {id}: {ex}");
                 return Json(new { success = false, message = ex.Message });
             }
         }
@@ -99,37 +143,20 @@ namespace Library.Web.Controllers.Books
         [HttpGet]
         public async Task<ActionResult> Details(int id)
         {
-            var book = await _bookService.GetBookByIdAsync(id);
-            if (book == null)
+            try 
             {
-                return HttpNotFound();
+                var book = await _bookService.GetBookByIdAsync(id);
+                if (book == null)
+                {
+                    return HttpNotFound();
+                }
+                return View(book);
             }
-
-            // Return full view for normal page requests (refresh/direct navigation)
-            return View(book);
-        }
-
-        // GET: Book/DetailsPartial/5 - For AJAX requests
-        [HttpGet]
-        public async Task<ActionResult> DetailsPartial(int id)
-        {
-            var book = await _bookService.GetBookByIdAsync(id);
-            if (book == null)
+            catch (Exception ex)
             {
-                return HttpNotFound();
+                Trace.TraceError($"[Details GET] Error loading book details for ID {id}: {ex}");
+                return View("Error");
             }
-
-            // Return partial view for AJAX calls
-            return PartialView("_BookDetails", book);
-        }
-
-        [HttpGet]
-        public async Task<JsonResult> GetBookDetails(int id)
-        {
-            var book = await _bookService.GetBookByIdAsync(id);
-            if (book == null)
-                return Json(new { success = false, message = "Book not found" }, JsonRequestBehavior.AllowGet);
-            return Json(book, JsonRequestBehavior.AllowGet);
         }
     }
- }
+}

@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Library.Core.Repositories
 {
-    public class MemberRepository : IMember
+    public class MemberRepository : IMemberRepository
     {
         public async Task AddAsync(Member member)
         {
@@ -38,9 +38,22 @@ namespace Library.Core.Repositories
             }
         }
 
-        public Task DeleteAsync(int bookId)
+        public async Task DeleteAsync(int memberId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using (var conn = DbConnectionFactory.CreateConnection())
+                using (var cmd = new SqlCommand("sp_DeleteMember", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@MemberId", memberId);
+                    await cmd.ExecuteNonQueryAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"Error deleting member with ID {memberId}.", ex);
+            }
         }
 
         public async Task<IEnumerable<Member>> GetAllAsync()
@@ -73,7 +86,7 @@ namespace Library.Core.Repositories
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("Error fetching books.", ex);
+                throw new ApplicationException("Error fetching members.", ex);
             }
 
             return members;
@@ -109,7 +122,7 @@ namespace Library.Core.Repositories
             }
             catch (Exception ex)
             {
-                throw new ApplicationException($"Error retrieving book with ID {memberId}.", ex);
+                throw new ApplicationException($"Error retrieving member with ID {memberId}.", ex);
             }
 
             return member;
@@ -135,7 +148,7 @@ namespace Library.Core.Repositories
             }
             catch (Exception ex)
             {
-                throw new ApplicationException($"Error updating book with ID {member.MemberId}.", ex);
+                throw new ApplicationException($"Error updating memeber with ID {member.MemberId}.", ex);
             }
         }
     }

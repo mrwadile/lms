@@ -38,7 +38,6 @@
                 </div>
                 <div class="card-body p-4">
                     <div class="row">
-                        <!-- Book Cover Placeholder -->
                         <div class="col-md-3 text-center mb-4">
                             <div class="book-cover-placeholder bg-gradient-primary text-white rounded shadow d-flex align-items-center justify-content-center" style="height: 200px; width: 140px; margin: 0 auto;">
                                 <i class="fas fa-book fa-3x opacity-75"></i>
@@ -114,7 +113,6 @@
                 </div>
             </div>
 
-            <!-- Warning Card -->
             <div class="card border-warning shadow-sm mt-4">
                 <div class="card-body">
                     <div class="d-flex align-items-center">
@@ -165,7 +163,7 @@
         $(function () {
             // ESC key to cancel
             $(document).keyup(function(e) {
-                if (e.keyCode === 27) { // ESC key
+                if (e.keyCode === 27) {
                     window.location.href = '@Url.Action("Index", "Book")';
                 }
             });
@@ -173,9 +171,7 @@
             $('#deleteBookForm').submit(function (e) {
                 e.preventDefault();
 
-                // Show confirmation modal instead of basic confirm
                 if (confirm('Are you sure you want to delete this book?')) {
-                    // Show loading state
                     const $btn = $('#deleteBtn');
                     const $spinner = $('#deleteSpinner');
                     const $btnContent = $('.btn-content');
@@ -192,7 +188,6 @@
                         data: $(this).serialize(),
                         success: function (result) {
                             if (result.success) {
-                                // Show success message briefly before redirect
                                 showAlert('success', 'Book deleted successfully! Redirecting...', 'fas fa-check-circle');
                                 setTimeout(function() {
                                     window.location.href = result.redirectUrl;
