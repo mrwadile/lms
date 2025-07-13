@@ -92,6 +92,26 @@ namespace Library.Core.Services.Members
             }
         }
 
+
+        /// <summary>
+        /// check issued books by member
+        /// </summary>
+        public bool HasIssuedRecords(int memberId)
+        {
+            if (memberId <= 0)
+            {
+                throw new ArgumentException(SharedResources.ErrorInvalidMemberId, nameof(memberId));
+            }
+            try
+            {
+                return _memberRepository.HasIssuedRecords(memberId);
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"{SharedResources.ErrorWhileCheckingIssuedRecords} {memberId}.", ex);
+            }
+        }
+
         /// <summary>
         /// Updates a book asynchronously.
         /// </summary>

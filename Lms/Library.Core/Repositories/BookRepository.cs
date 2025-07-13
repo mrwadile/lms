@@ -1,8 +1,9 @@
 ﻿using Library.Core.Data;
 using Library.Core.Models;
-using Library.Core.SharedResource;
 using Library.Core.Repositories.Interfaces;
+using Library.Core.SharedResource;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -294,6 +295,28 @@ namespace Library.Core.Repositories
             }
             return result;
         }
+
+        public bool HasIssuedRecords(int bookId)
+        {
+            try
+            {
+                using (var conn = DbConnectionFactory.CreateConnection())
+                {
+                    string query = "SELECT COUNT(*) FROM BookIssue WHERE BookId = @BookId";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@BookId", bookId);
+                        int count = (int)cmd.ExecuteScalar();
+                        return count > 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"{SharedResources.ErrorWhileCheckingIssuedRecords} {bookId}.", ex);
+            }
+        }
+
 
     }
 }

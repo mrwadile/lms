@@ -66,6 +66,10 @@ namespace Library.Web.Controllers.Members
         {
             try
             {
+                if (_memberService.HasIssuedRecords(id))
+                {
+                    return Json(new { success = false, message = "Cannot delete. Book has issue history." });
+                }
                 await _memberService.DeleteMemberAsync(id);
                 return Json(new { success = true, redirectUrl = Url.Action("Index", "Member") });
             }
