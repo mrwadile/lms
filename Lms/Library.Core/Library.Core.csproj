@@ -50,11 +50,15 @@
     <Compile Include="Data\DbConnectionFactory.cs" />
     <Compile Include="Models\Book.cs" />
     <Compile Include="Models\BookCategoryStats.cs" />
+    <Compile Include="Models\BookHistory - Copy.cs" />
+    <Compile Include="Models\BookHistory.cs" />
     <Compile Include="Models\BookIssue.cs" />
     <Compile Include="Models\ChartData.cs" />
     <Compile Include="Models\DashboardData.cs" />
     <Compile Include="Models\DashboardStats.cs" />
+    <Compile Include="Models\Issue.cs" />
     <Compile Include="Models\Member.cs" />
+    <Compile Include="Models\OverdueBook.cs" />
     <Compile Include="Models\RecentIssueStats.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -72,10 +76,9 @@
     <Compile Include="Services\Report\ReportService.cs" />
     <Compile Include="Services\UserLogin\ILoginService.cs" />
     <Compile Include="Services\UserLogin\LoginService.cs" />
+    <Compile Include="SharedResource\SharedResources.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Services\Reports\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>

@@ -1,5 +1,6 @@
 ﻿using Library.Core.Models;
 using Library.Core.Repositories.Interfaces;
+using Library.Core.SharedResource;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +22,7 @@ namespace Library.Core.Services.UserLogin
         {
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
-                throw new ArgumentException("Username and password cannot be null or empty.");
+                throw new ArgumentException(SharedResources.ErrorWhileFetchingLoginDetails);
             }
             return _authRepository.ValidateUserAsync(username, password);
         }

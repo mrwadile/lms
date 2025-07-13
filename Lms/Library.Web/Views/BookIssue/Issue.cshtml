@@ -1,0 +1,110 @@
+﻿@model Library.Web.ViewModels.BookIssueViewModel
+@{
+    ViewBag.Title = "Issue Book";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-lg border-0">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0"><i class="fas fa-arrow-circle-right me-2"></i> Issue Book</h3>
+        </div>
+
+        <div class="card-body">
+            <form id="issueForm">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <label for="BookId" class="form-label fw-bold">Select Book</label>
+                        <select class="form-select" id="BookId" name="BookId" required>
+                            <option value="">-- Select Book --</option>
+                            @foreach (var book in Model.AvailableBooks)
+                            {
+                                <option value="@book.BookId" data-available="@book.AvailableCopies">
+                                    @book.Title
+                                </option>
+                            }
+                        </select>
+                        <small id="bookAvailableInfo" class="text-muted mt-1 d-block"></small>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="MemberId" class="form-label fw-bold">Select Member</label>
+                        <select class="form-select" id="MemberId" name="MemberId" required>
+                            <option value="">-- Select Member --</option>
+                            @foreach (var member in Model.Members)
+                            {
+                                <option value="@member.MemberId">@member.FullName</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mt-4 text-center">
+                    <button type="submit" class="btn btn-success px-5">
+                        <i class="fas fa-check-circle me-2"></i> Issue Book
+                    </button>
+                    <a href="@Url.Action("Index", "Book")" class="btn btn-outline-secondary ms-3 px-4">
+                        <i class="fas fa-arrow-left me-2"></i> Back to List
+                    </a>
+                </div>
+            </form>
+
+            <!-- Alert Message -->
+            <div id="alertBox" class="alert mt-4 d-none" role="alert"></div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $('#BookId').on('change', function () {
+                const selected = $(this).find('option:selected');
+                const available = selected.data('available');
+
+                if (available !== undefined) {
+                    $('#bookAvailableInfo').text(`Available Copies: ${available}`);
+                } else {
+                    $('#bookAvailableInfo').text('');
+                }
+            });
+
+            $('#issueForm').submit(function (e) {
+                e.preventDefault();
+                const bookId = $('#BookId').val();
+                const memberId = $('#MemberId').val();
+
+                if (!bookId || !memberId) {
+                    showAlert('danger', 'Please select both book and member.');
+                    return;
+                }
+
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("Issue", "BookIssue")',
+                    data: { BookId: bookId, MemberId: memberId },
+                    success: function (res) {
+                        if (res.success) {
+                            showAlert('success', '✅ Book issued successfully!');
+                            $('#issueForm')[0].reset();
+                            $('#bookAvailableInfo').text('');
+                        } else {
+                            showAlert('danger', 'Failed to issue book. ' + (res.message || 'Please try again.'));
+                        }
+                    },
+                    error: function () {
+                        showAlert('danger', 'An error occurred during book issue.');
+                    }
+                });
+            });
+
+            function showAlert(type, message) {
+                $('#alertBox')
+                    .removeClass()
+                    .addClass(`alert alert-${type}`)
+                    .html(message)
+                    .removeClass('d-none');
+            }
+        });
+    </script>
+}

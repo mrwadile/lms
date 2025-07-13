@@ -1,6 +1,7 @@
 ﻿using Library.Core.Data;
 using Library.Core.Models;
 using Library.Core.Repositories.Interfaces;
+using Library.Core.SharedResource;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -34,7 +35,7 @@ namespace Library.Core.Repositories
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("Error adding member.", ex);
+                throw new ApplicationException(SharedResources.ErrorWhileAddingMember, ex);
             }
         }
 
@@ -52,7 +53,7 @@ namespace Library.Core.Repositories
             }
             catch (Exception ex)
             {
-                throw new ApplicationException($"Error deleting member with ID {memberId}.", ex);
+                throw new ApplicationException($"{SharedResources.ErrorWhileDeletingMember} {memberId}.", ex);
             }
         }
 
@@ -86,7 +87,7 @@ namespace Library.Core.Repositories
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("Error fetching members.", ex);
+                throw new ApplicationException(SharedResources.ErrorWhileFetchingMembers, ex);
             }
 
             return members;
@@ -122,7 +123,7 @@ namespace Library.Core.Repositories
             }
             catch (Exception ex)
             {
-                throw new ApplicationException($"Error retrieving member with ID {memberId}.", ex);
+                throw new ApplicationException($"{SharedResources.ErrorWhileFetchingMemberWithId} {memberId}.", ex);
             }
 
             return member;
@@ -148,7 +149,7 @@ namespace Library.Core.Repositories
             }
             catch (Exception ex)
             {
-                throw new ApplicationException($"Error updating memeber with ID {member.MemberId}.", ex);
+                throw new ApplicationException($"{SharedResources.ErrorWhileUpdatingMemberWithId} {member.MemberId}.", ex);
             }
         }
     }

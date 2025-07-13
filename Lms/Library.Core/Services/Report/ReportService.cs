@@ -61,7 +61,6 @@ namespace Library.Core.Services.Report
             return result;
         }
 
-
         public DashboardStats GetDashboardStats()
         {
             var stats = new DashboardStats();

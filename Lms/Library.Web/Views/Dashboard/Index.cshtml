@@ -16,17 +16,6 @@
                     <button class="btn btn-outline-primary btn-sm" id="refreshData">
                         <i class="bi bi-arrow-clockwise"></i> Refresh
                     </button>
-                    <div class="dropdown">
-                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
-                                id="timeRangeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            Last 7 Days
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="timeRangeDropdown">
-                            <li><a class="dropdown-item" href="#" data-range="7">Last 7 Days</a></li>
-                            <li><a class="dropdown-item" href="#" data-range="30">Last 30 Days</a></li>
-                            <li><a class="dropdown-item" href="#" data-range="90">Last 90 Days</a></li>
-                        </ul>
-                    </div>
                 </div>
             </div>
         </div>
@@ -128,7 +117,7 @@
         <div class="col-md-6">
             <div class="card shadow-sm h-100">
                 <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">📊 Books Issued Trend</h5>
+                    <h5 class="mb-0">Books Issued Trend</h5>
                     <div class="spinner-border spinner-border-sm d-none" role="status" id="chartLoader1">
                         <span class="visually-hidden">Loading...</span>
                     </div>
@@ -142,7 +131,7 @@
         <div class="col-md-6">
             <div class="card shadow-sm h-100">
                 <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">📚 Books by Category</h5>
+                    <h5 class="mb-0">Books by Category</h5>
                     <div class="spinner-border spinner-border-sm d-none" role="status" id="chartLoader2">
                         <span class="visually-hidden">Loading...</span>
                     </div>
@@ -154,12 +143,11 @@
         </div>
     </div>
 
-    <!-- Data Tables and Actions -->
     <div class="row mb-5">
         <div class="col-md-8">
             <div class="card shadow-sm">
                 <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">📂 Book Distribution by Category</h5>
+                    <h5 class="mb-0">Book Distribution by Category</h5>
                     <div class="input-group" style="width: 250px;">
                         <span class="input-group-text"><i class="bi bi-search"></i></span>
                         <input type="text" class="form-control form-control-sm" placeholder="Search categories..."
@@ -209,11 +197,11 @@
                         <a href="@Url.Action("Index", "Member")" class="btn btn-outline-success btn-lg">
                             <i class="bi bi-people me-2"></i> View Members
                         </a>
-                        <a href="@Url.Action("Index", "Transaction")" class="btn btn-outline-warning btn-lg">
-                            <i class="bi bi-arrow-left-right me-2"></i> Issue / Return
+                        <a href="@Url.Action("OverdueBooks", "Report")" class="btn btn-outline-warning btn-lg">
+                            <i class="bi bi-arrow-left-right me-2"></i> Over Due Books
                         </a>
-                        <a href="@Url.Action("Index", "Report")" class="btn btn-outline-info btn-lg">
-                            <i class="bi bi-graph-up me-2"></i> Reports
+                        <a href="@Url.Action("BookList", "Report")" class="btn btn-outline-info btn-lg">
+                            <i class="bi bi-graph-up me-2"></i> Book History
                         </a>
                     </div>
                 </div>
@@ -392,7 +380,6 @@
         }
 
         function loadFallbackData() {
-            // Use original ViewBag data as fallback
             const stats = {
                 totalBooks: 150,
                 availableBooks: 120,
@@ -472,16 +459,14 @@
             setTimeout(() => {
                 // --------------
                 //  Bar Chart
-                // -------------
+                // --------------
                 const weekDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-
                 const barLabels = [];
                 const barValues = [];
 
-                // Ensure all 7 days are present (even if value is 0)
                 weekDays.forEach(day => {
                     barLabels.push(day);
-                    barValues.push(chartData.barChart?.[day] ?? 0);
+                    barValues.push(chartData.bar?.[day] ?? 0);
                 });
 
                 const hasBarData = barValues.some(val => val > 0);
@@ -498,16 +483,17 @@
 
                 barChart.update();
 
-                // ------------
-                // Pie Chart
-                // ------------
-                const hasPieData = chartData?.pieChart?.labels?.length > 0 &&
-                    chartData?.pieChart?.data?.some(x => x > 0);
+                // --------------
+                //  Pie Chart
+                // --------------
+                const pieLabels = chartData.pie?.map(p => p.label) || [];
+                const pieValues = chartData.pie?.map(p => p.value) || [];
+                const hasPieData = pieValues.some(v => v > 0);
 
                 if (hasPieData) {
-                    pieChart.data.labels = chartData.pieChart.labels;
-                    pieChart.data.datasets[0].data = chartData.pieChart.data;
-                    pieChart.data.datasets[0].backgroundColor = generateRandomColors(chartData.pieChart.labels.length);
+                    pieChart.data.labels = pieLabels;
+                    pieChart.data.datasets[0].data = pieValues;
+                    pieChart.data.datasets[0].backgroundColor = generateRandomColors(pieLabels.length);
                 } else {
                     pieChart.data.labels = ["No Data"];
                     pieChart.data.datasets[0].data = [0];
@@ -518,6 +504,17 @@
 
                 $('#chartLoader1, #chartLoader2').addClass('d-none');
             }, 1000);
+        }
+
+        function generateRandomColors(count) {
+            const colors = [];
+            for (let i = 0; i < count; i++) {
+                const r = Math.floor(Math.random() * 156) + 100;
+                const g = Math.floor(Math.random() * 156) + 100;
+                const b = Math.floor(Math.random() * 156) + 100;
+                colors.push(`rgba(${r}, ${g}, ${b}, 0.7)`);
+            }
+            return colors;
         }
 
         function updateCategoryTable(categories) {
@@ -552,7 +549,6 @@
         function loadRecentActivity() {
             const activityContainer = $('#recentActivity');
 
-            // Simulate loading recent activity
             setTimeout(() => {
                 const activities = [
                     { icon: 'bi-book', text: 'New book "The Great Gatsby" added', time: '2 minutes ago', type: 'success' },
@@ -584,7 +580,6 @@
 
         function viewCategoryDetails(categoryName) {
             showToast(`Loading details for ${categoryName}...`, 'info');
-            // Implement category details view
         }
 
         function showToast(message, type = 'info') {
@@ -594,7 +589,6 @@
             // Update toast content
             toastBody.text(message);
 
-            // Update toast style based on type
             toastElement.removeClass('text-bg-success text-bg-warning text-bg-danger text-bg-info');
             toastElement.addClass(`text-bg-${type}`);
 

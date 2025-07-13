@@ -1,0 +1,47 @@
+﻿@model List<Library.Core.Models.Book>
+
+@{
+    ViewBag.Title = "📚 Book Report";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Book List</h2>
+
+<table class="table table-hover table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>Book ID</th>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Category</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var book in Model)
+        {
+            <tr>
+                <td>@book.BookId</td>
+                <td>@book.Title</td>
+                <td>@book.Author</td>
+                <td>@book.Category</td>
+                <td>
+                    <button class="btn btn-outline-primary view-history-btn" data-id="@book.BookId">
+                        <i class="fas fa-clock me-1"></i> View History
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section scripts {
+    <script>
+        $(document).on('click', '.view-history-btn', function (e) {
+            e.preventDefault();
+            const bookId = $(this).data('id');
+            const url = '@Url.Action("BookHistory", "Report")' + '?id=' + bookId;
+            window.location.href = url;
+        });
+    </script>
+}

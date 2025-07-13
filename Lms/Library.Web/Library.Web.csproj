@@ -151,14 +151,19 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\Books\BookController.cs" />
+    <Compile Include="Controllers\Books\BookIssueController.cs" />
     <Compile Include="Controllers\Dashboard\DashboardController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\Members\MemberController.cs" />
+    <Compile Include="Controllers\Reports\ReportController.cs" />
     <Compile Include="Controllers\UserLogin\LoginController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\BookIssueViewModel.cs" />
+    <Compile Include="Models\BookReturnViewModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
+    <Compile Include="Models\OverdueBook.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -247,10 +252,14 @@
     <Content Include="Views\Member\Create.cshtml" />
     <Content Include="Views\Member\Edit.cshtml" />
     <Content Include="Views\Member\Details.cshtml" />
+    <Content Include="Views\BookIssue\Issue.cshtml" />
+    <Content Include="Views\BookIssue\Return.cshtml" />
+    <Content Include="Views\Report\OverdueBooks.cshtml" />
+    <Content Include="Views\Report\BookHistory.cshtml" />
+    <Content Include="Views\Report\BookList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Controllers\Reports\" />
     <Folder Include="logs\" />
   </ItemGroup>
   <ItemGroup>

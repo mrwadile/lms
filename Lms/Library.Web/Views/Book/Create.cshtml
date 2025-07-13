@@ -146,7 +146,6 @@
                             alert('Book added successfully!');
                             window.location.href = result.redirectUrl || '@Url.Action("Index", "Book")';
                         } else {
-                            // Handle validation errors from server
                             if (result.errors) {
                                 displayValidationErrors(result.errors);
                             } else {
@@ -226,7 +225,6 @@
             function displayValidationErrors(errors) {
                 $('.text-danger').text('');
 
-                // Display server validation errors
                 for (const fieldName in errors) {
                     if (errors.hasOwnProperty(fieldName)) {
                         const errorMessages = errors[fieldName];

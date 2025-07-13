@@ -1,0 +1,31 @@
+﻿@model List<Library.Web.Models.OverdueBook>
+@{
+    ViewBag.Title = "Overdue Books";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Overdue Book List</h2>
+
+<table class="table table-bordered table-hover">
+    <thead class="table-danger">
+        <tr>
+            <th>Book</th>
+            <th>Member</th>
+            <th>Issue Date</th>
+            <th>Due Date</th>
+            <th>Days Overdue</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.BookTitle</td>
+                <td>@item.MemberName</td>
+                <td>@item.IssueDate.ToShortDateString()</td>
+                <td>@item.DueDate.ToShortDateString()</td>
+                <td class="text-danger fw-bold">@item.DaysOverdue</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,41 @@
+﻿@model List<Library.Core.Models.BookHistory>
+
+@{
+    ViewBag.Title = "Book Issue History";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Book History</h2>
+
+@if (Model != null && Model.Any())
+{
+    <table class="table table-bordered table-striped">
+        <thead class="table-primary">
+            <tr>
+                <th>Issue ID</th>
+                <th>Member</th>
+                <th>Issue Date</th>
+                <th>Due Date</th>
+                <th>Return Date</th>
+                <th>Fine</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var record in Model)
+            {
+                <tr>
+                    <td>@record.IssueId</td>
+                    <td>@record.MemberName</td>
+                    <td>@record.IssueDate.ToShortDateString()</td>
+                    <td>@record.DueDate.ToShortDateString()</td>
+                    <td>@(record.ReturnDate?.ToShortDateString() ?? "Not Returned")</td>
+                    <td>@((record.FineAmount ?? 0).ToString("C"))</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-warning">No history found for this book.</div>
+}

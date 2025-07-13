@@ -14,5 +14,11 @@ namespace Library.Core.Services.Books
         Task AddBookAsync(Book member);
         Task UpdateBookAsync(Book member);
         Task DeleteBookAsync(int id);
+        Task<string> IssueBookAsync(int bookId, int memberId);
+        Task<string> ReturnBookAsync(int issueId);
+        Task<IEnumerable<Issue>> GetUnreturnedIssuesAsync();
+        Task<List<OverdueBook>> GetOverdueBooksAsync();
+        Task<List<BookHistory>> GetBookHistoryAsync(int bookId);
+
     }
 }

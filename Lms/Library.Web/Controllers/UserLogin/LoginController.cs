@@ -39,6 +39,12 @@ namespace Library.Web.Controllers.UserLogin
                 return View(model);
             }
 
+            if (user.Role != "Admin")
+            {
+                ModelState.AddModelError("", "Only admin users are allowed to login.");
+                return View(model);
+            }
+
             // Save session
             Session["UserId"] = user.UserId;
             Session["Username"] = user.Username;

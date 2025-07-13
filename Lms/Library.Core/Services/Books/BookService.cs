@@ -1,5 +1,6 @@
 ﻿using Library.Core.Models;
 using Library.Core.Repositories.Interfaces;
+using Library.Core.SharedResource;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -26,7 +27,7 @@ namespace Library.Core.Services.Books
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("Error occurred while adding the book.", ex);
+                throw new ApplicationException(SharedResources.ErrorWhileAddingBook, ex);
             }
         }
 
@@ -41,7 +42,7 @@ namespace Library.Core.Services.Books
             }
             catch (Exception ex)
             {
-                throw new ApplicationException($"Error occurred while deleting the book with ID {id}.", ex);
+                throw new ApplicationException($"{SharedResources.ErrorWhileDeletingingBook} {id}.", ex);
             }
         }
 
@@ -56,7 +57,7 @@ namespace Library.Core.Services.Books
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("Error occurred while fetching all books.", ex);
+                throw new ApplicationException(SharedResources.ErrorWhileFetchingBooks, ex);
             }
         }
 
@@ -71,10 +72,70 @@ namespace Library.Core.Services.Books
             }
             catch (Exception ex)
             {
-                throw new ApplicationException($"Error occurred while fetching the book with ID {id}.", ex);
+                throw new ApplicationException($"{SharedResources.ErrorWhileFetchingBookWithId} {id}.", ex);
             }
         }
 
+        /// <summary>
+        /// Ovedues book.
+        /// </summary>
+        public Task<List<OverdueBook>> GetOverdueBooksAsync()
+        {
+            try
+            {
+                return _bookRepository.GetOverdueBooksAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException(SharedResources.ErrorWhileOverdueBooks, ex);
+            }
+        }
+
+        /// <summary>
+        /// All Issue book.
+        /// </summary>
+        public async Task<IEnumerable<Issue>> GetUnreturnedIssuesAsync()
+        {
+            try
+            {
+                return await _bookRepository.GetUnreturnedIssuesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException(SharedResources.ErrorWhileFetchingUnretrnedIssuesBoks, ex);
+            }
+        }
+
+        /// <summary>
+        /// Issue book.
+        /// </summary>
+        public async Task<string> IssueBookAsync(int bookId, int memberId)
+        {
+            try
+            {
+                return await _bookRepository.IssueBookAsync(bookId, memberId);
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"{SharedResources.ErrorWhileIssueBook} {bookId} to member with ID {memberId}.", ex);
+            }
+        }
+
+        /// <summary>
+        /// return book.
+        /// </summary>
+        public async Task<string> ReturnBookAsync(int issueId)
+        {
+            try
+            {
+                return await _bookRepository.ReturnBookAsync(issueId);
+            }
+            catch (Exception ex)
+            {
+                return $"{SharedResources.ErrorWhileReturnBook} {ex.Message}";
+            }
+        }
+        
         /// <summary>
         /// Updates a book asynchronously.
         /// </summary>
@@ -86,8 +147,24 @@ namespace Library.Core.Services.Books
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("Error occurred while updating the book.", ex);
+                throw new ApplicationException(SharedResources.ErrorWhileupdatingBook, ex);
             }
         }
+
+        /// <summary>
+        /// Book history.
+        /// </summary>
+        public async Task<List<BookHistory>> GetBookHistoryAsync(int bookId)
+        {
+            try
+            {
+                return await _bookRepository.GetBookHistoryAsync(bookId);
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"{SharedResources.ErrorWhileFetchingHistoryBooks} {bookId}.", ex);
+            }
+        }
+
     }
 }

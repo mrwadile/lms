@@ -1,5 +1,6 @@
 ﻿using Library.Core.Models;
 using Library.Core.Repositories.Interfaces;
+using Library.Core.SharedResource;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +25,7 @@ namespace Library.Core.Services.Members
         {
             if (member == null)
             {
-                throw new ArgumentNullException(nameof(member), "Member cannot be null.");
+                throw new ArgumentNullException(nameof(member), SharedResources.ErrorMemberCanNotBeNull);
             }
             try
             {
@@ -32,7 +33,7 @@ namespace Library.Core.Services.Members
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("Error adding member.", ex);
+                throw new ApplicationException(SharedResources.ErrorWhileAddingMember, ex);
             }
         }
 
@@ -44,7 +45,7 @@ namespace Library.Core.Services.Members
         {
             if (id <= 0)
             {
-                throw new ArgumentException("Invalid member ID.", nameof(id));
+                throw new ArgumentException(SharedResources.ErrorInvalidMemberId, nameof(id));
             }
             try
             {
@@ -52,7 +53,7 @@ namespace Library.Core.Services.Members
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("Error deleting member.", ex);
+                throw new ApplicationException(SharedResources.ErrorWhileDeletingMember + " " + id, ex);
             }
         }
 
@@ -68,7 +69,7 @@ namespace Library.Core.Services.Members
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("Error fetching members.", ex);
+                throw new ApplicationException(SharedResources.ErrorWhileFetchingMembers, ex);
             }
         }
 
@@ -79,7 +80,7 @@ namespace Library.Core.Services.Members
         {
             if (id <= 0)
             {
-                throw new ArgumentException("Invalid member ID.", nameof(id));
+                throw new ArgumentException(SharedResources.ErrorInvalidMemberId, nameof(id));
             }
             try
             {
@@ -87,7 +88,7 @@ namespace Library.Core.Services.Members
             }
             catch (Exception ex)
             {
-                throw new ApplicationException($"Error fetching member with ID {id}.", ex);
+                throw new ApplicationException($"{SharedResources.ErrorWhileFetchingMemberWithId} {id}.", ex);
             }
         }
 
@@ -98,11 +99,11 @@ namespace Library.Core.Services.Members
         {
             if (member == null)
             {
-                throw new ArgumentNullException(nameof(member), "Member cannot be null.");
+                throw new ArgumentNullException(nameof(member), SharedResources.ErrorMemberCanNotBeNull);
             }
             if (member.MemberId <= 0)
             {
-                throw new ArgumentException("Invalid member ID.", nameof(member.MemberId));
+                throw new ArgumentException(SharedResources.ErrorInvalidMember, nameof(member.MemberId));
             }
             try
             {
@@ -110,7 +111,7 @@ namespace Library.Core.Services.Members
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("Error updating member.", ex);
+                throw new ApplicationException(SharedResources.ErrorWhileUpdatingMemberWithId + " " + member.MemberId, ex);
             }
         }
     }

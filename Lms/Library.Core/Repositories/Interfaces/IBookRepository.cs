@@ -14,5 +14,11 @@ namespace Library.Core.Repositories.Interfaces
         Task AddAsync(Book book);
         Task UpdateAsync(Book book);
         Task DeleteAsync(int bookId);
+        Task<string> IssueBookAsync(int bookId, int memberId);
+        Task<string> ReturnBookAsync(int issueId);
+        Task<IEnumerable<Issue>> GetUnreturnedIssuesAsync();
+        Task<List<OverdueBook>> GetOverdueBooksAsync();
+        Task<List<BookHistory>> GetBookHistoryAsync(int bookId);
+
     }
 }

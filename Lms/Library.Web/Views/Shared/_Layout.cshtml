@@ -51,8 +51,33 @@
                         @Html.ActionLink("Members", "Index", "Member", null, new { @class = "nav-link" })
                     </li>
                     <li class="nav-item">
-                        @Html.ActionLink("Reports", "Index", "Report", null, new { @class = "nav-link" })
+                        <a class="nav-link" href="@Url.Action("Issue", "BookIssue")">
+                            <i class="fas fa-arrow-circle-right me-2"></i> Issue Book
+                        </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Return", "BookIssue")">
+                            <i class="fas fa-undo-alt me-2"></i> Return Book
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="reportDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-chart-bar me-1"></i> Reports
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="reportDropdown">
+                            <li>
+                                <a class="dropdown-item" href="@Url.Action("OverdueBooks", "Report")">
+                                    <i class="fas fa-exclamation-circle text-danger me-2"></i> Overdue Members
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="@Url.Action("BookList", "Report")">
+                                    <i class="fas fa-book text-primary me-2"></i> Book History
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
                 </ul>
 
                 @if (Session["UserId"] != null)
