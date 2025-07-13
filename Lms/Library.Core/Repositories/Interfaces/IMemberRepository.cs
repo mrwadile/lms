@@ -14,5 +14,6 @@ namespace Library.Core.Repositories.Interfaces
         Task AddAsync(Member member);
         Task UpdateAsync(Member member);
         Task DeleteAsync(int memberId);
+        bool HasIssuedRecords(int memberId);
     }
 }

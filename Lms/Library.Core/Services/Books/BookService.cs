@@ -166,5 +166,24 @@ namespace Library.Core.Services.Books
             }
         }
 
+
+        /// <summary>
+        /// check issued Book
+        /// </summary>
+        public bool HasIssuedRecords(int bookId)
+        {
+            if (bookId <= 0)
+            {
+                throw new ArgumentException(SharedResources.ErrorInvalidBookId, nameof(bookId));
+            }
+            try
+            {
+                return _bookRepository.HasIssuedRecords(bookId);
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"{SharedResources.ErrorWhileCheckingIssuedRecords} {bookId}.", ex);
+            }
+        }
     }
 }

@@ -129,6 +129,10 @@ namespace Library.Web.Controllers.Books
         {
             try
             {
+                if (_bookService.HasIssuedRecords(id))
+                {
+                    return Json(new { success = false, message = "Cannot delete. Book has issue history." });
+                }
                 await _bookService.DeleteBookAsync(id);
                 return Json(new { success = true, redirectUrl = Url.Action("Index", "Book") });
             }

@@ -14,5 +14,6 @@ namespace Library.Core.Services.Members
         Task AddMemberAsync(Member member);
         Task UpdateMemberAsync(Member member);
         Task DeleteMemberAsync(int id);
+        bool HasIssuedRecords(int bookId);
     }
 }

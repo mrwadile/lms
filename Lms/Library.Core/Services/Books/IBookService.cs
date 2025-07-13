@@ -19,6 +19,7 @@ namespace Library.Core.Services.Books
         Task<IEnumerable<Issue>> GetUnreturnedIssuesAsync();
         Task<List<OverdueBook>> GetOverdueBooksAsync();
         Task<List<BookHistory>> GetBookHistoryAsync(int bookId);
+        bool HasIssuedRecords(int bookId);
 
     }
 }

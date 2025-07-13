@@ -23,10 +23,12 @@ namespace Library.Core.SharedResource
         public static string ErrorWhileUpdatingMemberWithId = "Error while updating memeber with ID";
         public static string ErrorMemberCanNotBeNull = "Member cannot be null.";
         public static string ErrorInvalidMemberId = "Invalid member ID.";
+        public static string ErrorInvalidBookId = "Invalid member ID.";
         public static string ErrorInvalidMember = "Invalid member";
         public static string ErrorWhileOverdueBooks = "Error occurred while fetching overdue books.";
         public static string ErrorWhileFetchingUnretrnedIssuesBoks= "Error occurred while fetching unreturned issues.";
         public static string ErrorWhileReturnBook= "Error returning book:";
         public static string ErrorWhileFetchingHistoryBooks= "Error occurred while fetching the history for book with ID";
+        public static string ErrorWhileCheckingIssuedRecords = "Cannot delete. Book has issue history.";
     }
 }

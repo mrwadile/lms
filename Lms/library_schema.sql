@@ -138,6 +138,7 @@ BEGIN
     DELETE FROM BookMaster WHERE BookId = @BookId;
 END
 -- sp_GetAllBooks
+GO
 CREATE PROCEDURE sp_GetAllBooks
 AS
 BEGIN
